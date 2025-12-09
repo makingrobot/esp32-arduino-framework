@@ -13,7 +13,6 @@
 #define TAG "Sensor"
 
 Sensor::Sensor() {
-    timer_ = new SwTimer("Sensor");
 }
 
 Sensor::~Sensor() {
@@ -23,7 +22,9 @@ Sensor::~Sensor() {
 }
 
 void Sensor::Start(uint32_t interval_ms) {
-    if (timer_ != nullptr) {
+    if (timer_ == nullptr) {
+        timer_ = new SwTimer("Sensor");
+    } else {
         timer_->Stop();
     }
     
