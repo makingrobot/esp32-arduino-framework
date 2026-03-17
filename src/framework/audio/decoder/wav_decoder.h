@@ -16,7 +16,7 @@
 class WavDecoder : public AudioDecoder
 {
 public:
-    WavDecoder(AudioSource *source);
+    WavDecoder(AudioSource *source, uint16_t buf_size);
     virtual ~WavDecoder();
     bool Init() override;
     bool Decode() override;
@@ -29,6 +29,9 @@ private:
     bool GetBufferedData(int bytes, void *dest);
     bool ReadWAVInfo();
     bool Stop();
+
+    void Info(const char *name, int value);
+    void Info(const char *name, const char *value);
 
     AudioSource *source_;
 

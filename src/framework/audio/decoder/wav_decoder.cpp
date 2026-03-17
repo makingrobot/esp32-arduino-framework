@@ -8,10 +8,14 @@
 
 #include <Arduino.h>
 #include "wav_decoder.h"
+#include "../../sys/log.h"
 
-WavDecoder::WavDecoder(AudioSource *source) : source_(source)
+#define TAG "WavDecoder"
+
+WavDecoder::WavDecoder(AudioSource *source, uint16_t buf_size)
 {
-    buffSize = 128;
+    source_ = source;
+    buffSize = buf_size;
     buff = NULL;
     buffPtr = 0;
     buffLen = 0;
@@ -32,9 +36,10 @@ bool WavDecoder::Stop()
 
 bool WavDecoder::Init()
 {
+    Log::Info(TAG, "init...");
     if (!ReadWAVInfo()) {
-      Serial.printf_P(PSTR("Init: failed during ReadWAVInfo\n"));
-      return false;
+        Log::Error(TAG, "Init: failed during ReadWAVInfo");
+        return false;
     }
 
     return true;
@@ -103,34 +108,34 @@ bool WavDecoder::ReadWAVInfo()
 
     // Header == "RIFF"
     if (!ReadU32(&u32)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
       return false;
     };
     if (u32 != 0x46464952) {
-      Serial.printf_P(PSTR("ReadWAVInfo: cannot read WAV, invalid RIFF header\n"));
+      Log::Error(TAG, "ReadWAVInfo: cannot read WAV, invalid RIFF header");
       return false;
     }
 
     // Skip ChunkSize
     if (!ReadU32(&u32)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
       return false;
     };
 
     // Format == "WAVE"
     if (!ReadU32(&u32)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
       return false;
     };
     if (u32 != 0x45564157) {
-      Serial.printf_P(PSTR("ReadWAVInfo: cannot read WAV, invalid WAVE header\n"));
+      Log::Error(TAG, "ReadWAVInfo: cannot read WAV, invalid WAVE header");
       return false;
     }
 
     // there might be JUNK or PAD - ignore it by continuing reading until we get to "fmt "
     while (1) {
       if (!ReadU32(&u32)) {
-        Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+        Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
         return false;
       };
       if (u32 == 0x20746d66) break; // 'fmt '
@@ -138,72 +143,75 @@ bool WavDecoder::ReadWAVInfo()
 
     // subchunk size
     if (!ReadU32(&u32)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
       return false;
     };
     if (u32 == 16) { toSkip = 0; }
     else if (u32 == 18) { toSkip = 18 - 16; }
     else if (u32 == 40) { toSkip = 40 - 16; }
     else {
-      Serial.printf_P(PSTR("ReadWAVInfo: cannot read WAV, appears not to be standard PCM \n"));
+      Log::Error(TAG, "ReadWAVInfo: cannot read WAV, appears not to be standard PCM");
       return false;
     } // we only do standard PCM
 
     // AudioFormat
     if (!ReadU16(&u16)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
       return false;
     };
     if (u16 != 1) {
-      Serial.printf_P(PSTR("ReadWAVInfo: cannot read WAV, AudioFormat appears not to be standard PCM \n"));
+      Log::Error(TAG, "ReadWAVInfo: cannot read WAV, AudioFormat appears not to be standard PCM");
       return false;
     } // we only do standard PCM
 
     // NumChannels
     if (!ReadU16(&channels_)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data\n");
       return false;
     };
     if ((channels_<1) || (channels_>2)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: cannot read WAV, only mono and stereo are supported \n"));
+      Log::Error(TAG, "ReadWAVInfo: cannot read WAV, only mono and stereo are supported");
       return false;
     } // Mono or stereo support only
+    Info("Channels", channels_);
 
     // SampleRate
     if (!ReadU32(&sampleRate_)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
       return false;
     };
     if (sampleRate_ < 1) {
-      Serial.printf_P(PSTR("ReadWAVInfo: cannot read WAV, unknown sample rate \n"));
+      Log::Error(TAG, "ReadWAVInfo: cannot read WAV, unknown sample rate");
       return false;
     }  // Weird rate, punt.  Will need to check w/DAC to see if supported
+    Info("SampleRate", sampleRate_);
 
     // Ignore byterate and blockalign
     if (!ReadU32(&u32)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
       return false;
     };
     if (!ReadU16(&u16)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
       return false;
     };
 
     // Bits per sample
     if (!ReadU16(&bitsPerSample_)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
       return false;
     };
     if ((bitsPerSample_!=8) && (bitsPerSample_ != 16)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: cannot read WAV, only 8 or 16 bits is supported \n"));
+      Log::Error(TAG, "ReadWAVInfo: cannot read WAV, only 8 or 16 bits is supported");
       return false;
     }  // Only 8 or 16 bits
+    Info("BitsPerSample", bitsPerSample_);
 
     // Skip any extra header
     while (toSkip) {
       uint8_t ign;
       if (!ReadU8(&ign)) {
-        Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+        Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
         return false;
       };
       toSkip--;
@@ -213,38 +221,47 @@ bool WavDecoder::ReadWAVInfo()
     do {
       // id == "data"
       if (!ReadU32(&u32)) {
-        Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+        Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
         return false;
       };
       if (u32 == 0x61746164) break; // "data"
       // Skip size, read until end of chunk
       if (!ReadU32(&u32)) {
-        Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+        Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
         return false;
       };
       if(!source_->Seek(u32, SEEK_CUR)) {
-        Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data, seek failed\n"));
+        Log::Error(TAG, "ReadWAVInfo: failed to read WAV data, seek failed");
         return false;
       }
     } while (1);
 
     // Skip size, read until end of file...
     if (!ReadU32(&u32)) {
-      Serial.printf_P(PSTR("ReadWAVInfo: failed to read WAV data\n"));
+      Log::Error(TAG, "ReadWAVInfo: failed to read WAV data");
       return false;
     };
     availBytes = u32;
+    Info("AvailBytes", u32);
 
     // Now set up the buffer or fail
     buff = reinterpret_cast<uint8_t *>(malloc(buffSize));
     if (!buff) {
-      Serial.printf_P(PSTR("ReadWAVInfo: cannot read WAV, failed to set up buffer \n"));
+      Log::Error(TAG, "ReadWAVInfo: cannot read WAV, failed to set up buffer");
       return false;
     };
     buffPtr = 0;
     buffLen = 0;
 
     return true;
+}
+
+void WavDecoder::Info(const char *name, int value) {
+  Log::Info(TAG, "%s: %d", name, value);
+}
+
+void WavDecoder::Info(const char *name, const char *value) {
+  Log::Info(TAG, "%s: %s", name, value);
 }
 
 #endif
