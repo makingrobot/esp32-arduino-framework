@@ -29,7 +29,7 @@ public:
     void Sleep() override;
    
     void SetWindow(U8g2Window* window);
-    U8g2Window* GetWindow() { return window_; }
+    U8g2Window* GetWindow() override { return window_; }
 
     const U8G2* u8g2() const { return driver_; }
 

@@ -12,14 +12,15 @@
 
 #include <U8g2lib.h>
 #include <string>
+#include "window.h"
 
-class U8g2Window {
+class U8g2Window : public Window {
 public:
     U8g2Window() { }
 
     virtual void Setup(U8G2* driver, const uint8_t* fonts);
-    virtual void SetStatus(const std::string& status);
-    virtual void SetText(uint8_t line, const std::string& text);
+    virtual void SetStatus(const std::string& status) override;
+    virtual void SetText(uint8_t line, const std::string& text) override;
 
 private:
     void Update();

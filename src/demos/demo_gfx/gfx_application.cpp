@@ -51,11 +51,11 @@ void GfxApplication::OnInit() {
     
     Board& board = Board::GetInstance();
     board.GetDisplay()->SetStatus("Work");
-    board.GetDisplay()->SetText("Hello world!");
+    board.GetDisplay()->SetText(1, "Hello world!");
 #else
     Board& board = Board::GetInstance();
     board.GetDisplay()->SetStatus("Work");
-    board.GetDisplay()->SetText("Hello world!");
+    board.GetDisplay()->SetText(1, "Hello world!");
     // GfxDisplay* display = (GfxDisplay*)Board::GetInstance().GetDisplay();
     // display->Rotate(1);
 

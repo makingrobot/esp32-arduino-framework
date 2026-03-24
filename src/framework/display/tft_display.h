@@ -22,7 +22,7 @@ public:
     void Rotate(uint8_t rotation) override;
 
     void SetWindow(TftWindow* window);
-    TftWindow* GetWindow() { return window_; }
+    TftWindow* GetWindow() override { return window_; }
     
     void SetStatus(const std::string& status) override;
     void SetText(const std::string& text) override;

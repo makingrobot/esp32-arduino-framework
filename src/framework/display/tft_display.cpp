@@ -13,13 +13,11 @@
 #define TAG "TftDisplay"
 
 TftDisplay::TftDisplay(TFT_eSPI* driver, int width, int height) {
-            
     Log::Debug(TAG, "TftDisplay constructor.");
 
     driver_ = driver;
     width_ = width;
     height_ = height;
-
 }
 
 void TftDisplay::SetWindow(TftWindow* window) {

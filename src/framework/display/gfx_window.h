@@ -12,12 +12,13 @@
 
 #include <Arduino_GFX_Library.h>
 #include <string>
+#include "window.h"
 
-class GfxWindow {
+class GfxWindow : public Window {
 public:
     virtual void Setup(Arduino_GFX* driver);
-    virtual void SetStatus(const std::string& status);
-    virtual void SetText(const std::string& text);
+    virtual void SetStatus(const std::string& status) override;
+    virtual void SetText(uint8_t line, const std::string& text) override;
    
 private:
     void Update();

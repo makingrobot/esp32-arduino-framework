@@ -12,6 +12,7 @@
 #include <string>
 #include "config.h"
 #include "../sys/log.h"
+#include "window.h"
 
 class Display {
 public:
@@ -29,6 +30,7 @@ public:
     virtual void UpdateStatusBar(bool update_all = false) = 0;
     virtual void ShowNotification(const std::string &notification, int duration_ms = 3000) = 0;
     virtual void Sleep() = 0;
+    virtual Window* GetWindow() = 0;
 
     inline int width() const { return width_; }
     inline int height() const { return height_; }
@@ -61,11 +63,9 @@ private:
 };
 
 class NoDisplay : public Display {
-private:
-    bool Lock(int timeout_ms = 0) override {
-        return true;
-    }
-    void Unlock() override {}
+public:
+    NoDisplay() { window_ = new NoWindow(); }
+    ~NoDisplay() { delete window_; }
 
     void Init() override { }
     void Rotate(uint8_t rotation) override { }
@@ -74,6 +74,15 @@ private:
     void UpdateStatusBar(bool update_all = false) override { }
     void ShowNotification(const std::string &notification, int duration_ms = 3000) override { }
     void Sleep() override { }
+    Window* GetWindow() override { return window_; }
+
+protected:
+    bool Lock(int timeout_ms = 0) override { return true; }
+    void Unlock() override { }
+
+private:
+    Window *window_;
+
 };
 
 #endif

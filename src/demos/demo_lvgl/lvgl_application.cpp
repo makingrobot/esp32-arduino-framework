@@ -23,7 +23,7 @@ void* create_application() {
 void LvglApplication::OnInit() {
 
     LvglDisplay* disp = static_cast<LvglDisplay*>(Board::GetInstance().GetDisplay());
-    disp->GetWindow()->SetText("Hello world2!");
+    disp->GetWindow()->SetText(0, "Hello world2!");
 }
 
 void LvglApplication::OnLoop() {

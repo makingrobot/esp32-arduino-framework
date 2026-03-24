@@ -21,7 +21,8 @@ public:
     void SetupUI(lv_obj_t* container, const ThemeColors& theme, const DisplayFonts& fonts) override;
     void SetTheme(const ThemeColors& theme) override;
     
-    void SetText(const std::string& text) override;
+    void SetStatus(const std::string& status) override { };
+    void SetText(uint8_t line, const std::string& text) override;
 
 protected:
 

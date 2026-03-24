@@ -201,7 +201,7 @@ void LvglDisplay::SetStatus(const std::string& status) {
 void LvglDisplay::SetText(const std::string& text) {
     if (window_!=nullptr) {
         DisplayLockGuard lock(this);
-        window_->SetText(text);
+        window_->SetText(0, text);
         
         last_status_update_time_ = std::chrono::system_clock::now();
     }

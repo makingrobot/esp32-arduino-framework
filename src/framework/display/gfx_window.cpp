@@ -23,7 +23,7 @@ void GfxWindow::SetStatus(const std::string& status) {
     Update();
 }
 
-void GfxWindow::SetText(const std::string& text) {
+void GfxWindow::SetText(uint8_t line, const std::string& text) {
     text_ = text;
 
     Update();

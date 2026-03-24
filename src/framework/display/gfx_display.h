@@ -28,7 +28,7 @@ public:
     void Sleep() override { }
    
     void SetWindow(GfxWindow* window);
-    GfxWindow* GetWindow() { return window_; }
+    GfxWindow* GetWindow() override { return window_; }
 
     const Arduino_GFX* gfx() const { return driver_; }
 

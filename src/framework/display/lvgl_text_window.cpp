@@ -70,7 +70,7 @@ void LvglTextWindow::SetTheme(const ThemeColors& theme) {
     }
 }
 
-void LvglTextWindow::SetText(const std::string& text) {
+void LvglTextWindow::SetText(uint8_t line, const std::string& text) {
     if (text_label_ == nullptr) {
         Log::Warn(TAG, "text label not setup.");
         return;

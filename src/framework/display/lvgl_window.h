@@ -13,12 +13,12 @@
 #include <string>
 #include <lvgl.h>
 #include "lvgl_style.h"
+#include "window.h"
 
-class LvglWindow {
+class LvglWindow : public Window {
 public:
     virtual ~LvglWindow() = default;
 
-    virtual void SetText(const std::string& text) = 0;
     virtual void SetupUI(lv_obj_t* container, const ThemeColors& theme, const DisplayFonts& fonts) = 0;
     virtual void SetTheme(const ThemeColors& theme) = 0;
 

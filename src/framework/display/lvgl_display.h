@@ -54,7 +54,7 @@ public:
     void Rotate(uint8_t rotation) override;
     
     void SetWindow(LvglWindow* window);
-    LvglWindow* GetWindow() { return window_; }
+    LvglWindow* GetWindow() override { return window_; }
 
     // override
     void SetStatus(const std::string& status) override;
