@@ -34,8 +34,10 @@ public:
 
     void SetText(uint8_t line, const tft_line_t& line_t);
    
-private:
+protected:
     TFT_eSPI* driver_ = nullptr;
+
+private:
     std::string status_ = "";
     std::vector<tft_line_t> text_line_;
 };

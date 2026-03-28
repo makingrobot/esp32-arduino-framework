@@ -22,10 +22,12 @@ public:
     virtual void SetStatus(const std::string& status) override;
     virtual void SetText(uint8_t line, const std::string& text) override;
 
+protected:
+    U8G2* driver_ = nullptr;
+
 private:
     void Update();
 
-    U8G2* driver_ = nullptr;
     std::string status_ = "";
     std::string text_line_[3] = {"", "", ""};
 };

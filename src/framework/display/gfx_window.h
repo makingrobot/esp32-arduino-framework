@@ -20,10 +20,12 @@ public:
     virtual void SetStatus(const std::string& status) override;
     virtual void SetText(uint8_t line, const std::string& text) override;
    
+protected:
+    Arduino_GFX* driver_ = nullptr;
+
 private:
     void Update();
     
-    Arduino_GFX* driver_ = nullptr;
     std::string status_ = "";
     std::string text_ = "";
 };

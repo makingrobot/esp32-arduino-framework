@@ -30,7 +30,7 @@ void Sensor::Start(uint32_t interval_ms) {
     
     timer_->Start(interval_ms, [this](){
         auto& app = Application::GetInstance();
-        app.Schedule([this](){
+        app.Schedule([this]() {
             ReadData();
         });
     });
@@ -45,23 +45,19 @@ void Sensor::Stop() {
 /**
  * 读取传感器数据
  */
-void Sensor::ReadData() {
-    sensor_val_ = new SensorValue();
-    bool success = ReadValue(sensor_val_);
-    if (!success) {
-        return;
+bool Sensor::ReadData() {
+
+    bool success = ReadValue();
+    if (success) {
+        if (on_newdata_callback_) {
+            on_newdata_callback_(*sensor_val_);
+        } else {
+            auto& app = Application::GetInstance();
+            app.OnSensorDataEvent(name_, *sensor_val_);
+        }
     }
 
-    if (on_newdata_callback_) {
-        // 定制处理
-        on_newdata_callback_(*sensor_val_);
-    } else {
-        // 默认处理
-        auto& app = Application::GetInstance();
-        app.OnSensorDataEvent(name_, *sensor_val_);
-    }
-
-    delete sensor_val_;
+    return success;
 }
 
 /*********** AnalogSensor **************/
@@ -69,9 +65,8 @@ AnalogSensor::AnalogSensor(const std::string& name, gpio_num_t pin) : Sensor(nam
     pinMode(sensor_pin_, INPUT);
 }
 
-bool AnalogSensor::ReadValue(SensorValue *value) {
-    Log::Debug("AnalogSensor", "Read value.");
-    value->setIntValue(analogRead(sensor_pin_));
+bool AnalogSensor::ReadValue() {
+    sensor_val_->setIntValue(analogRead(sensor_pin_));
     return true;
 }
 
@@ -80,8 +75,7 @@ DigitalSensor::DigitalSensor(const std::string& name, gpio_num_t pin) : Sensor(n
     pinMode(sensor_pin_, INPUT);
 }
 
-bool DigitalSensor::ReadValue(SensorValue *value) {
-    Log::Debug("DigitalSensor", "Read value.");
-    value->setIntValue(digitalRead(sensor_pin_));
-    return true;
+bool DigitalSensor::ReadValue() {
+    sensor_val_->setIntValue(digitalRead(sensor_pin_));
+    return false;
 }
