@@ -53,7 +53,7 @@ public:
     /**
      * 从队列接收
      */
-    bool OnReceive(void *item, int timeout_ms = 0) {
+    bool Receive(void *item, int timeout_ms = 0) {
         TickType_t ticksToWait = timeout_ms >= 0 ? pdMS_TO_TICKS(timeout_ms) : portMAX_DELAY;
         if (xQueueReceive(queue_, item, ticksToWait) != pdPASS) {
             Log::Warn(TAG, "从队列 %s 接收数据失败。", name_.c_str());
