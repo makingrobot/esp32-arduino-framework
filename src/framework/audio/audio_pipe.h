@@ -9,6 +9,7 @@
 #ifndef _AUDIO_PIPE_H
 #define _AUDIO_PIPE_H
 
+#include <functional>
 #include <freertos/FreeRTOS.h>
 
 #include "audio_input.h"
@@ -30,6 +31,11 @@ public:
     void MetadataCallback(const char *tag, const char *type, const char *text);
     void StatusCallback(const char *tag, int code, const char *text);
     
+    void SetDataListener(std::function<void(const sample_data_t)> listener) 
+    {
+        listener_ = listener;
+    }
+
 protected:
     void Execute();
     
@@ -43,6 +49,7 @@ private:
 
     TaskHandle_t task_handle_;
 
+    std::function<void(const sample_data_t)> listener_;
 };
 
 #endif // _AUDIO_PIPE_H

@@ -17,7 +17,7 @@
 class AudioEncoder {
 public:
     virtual bool Init() { return false; }
-    virtual bool Encode(const uint16_t *data, uint32_t samples) = 0;
+    virtual bool Encode(const sample_data_t data) = 0;
     
 };
 

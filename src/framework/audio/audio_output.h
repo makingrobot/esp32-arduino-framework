@@ -18,7 +18,7 @@
 class AudioOutput {
 public:
     virtual bool Init() { return false; }
-    virtual uint32_t WriteSamples(const int16_t *data, uint32_t samples) = 0;
+    virtual uint32_t WriteSamples(const sample_data_t data) = 0;
     virtual bool Stop() { return false; }
     virtual const char* Tag() = 0;
 

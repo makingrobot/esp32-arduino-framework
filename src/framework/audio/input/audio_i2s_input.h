@@ -24,7 +24,7 @@ public:
     bool Handle() override;
     bool Close() override;
     bool isEOF() override;
-    int16_t* GetSamples() override;
+    sample_data_t GetSamples() override;
 
     const char* Tag() override { return "I2sInput"; };
 

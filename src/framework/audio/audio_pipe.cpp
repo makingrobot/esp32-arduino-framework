@@ -70,10 +70,15 @@ void AudioPipe::Execute() {
     // AudioOutput使用WriteXxx方法推送数据；
     while (running_ && !input_->isEOF()) {
         if (input_->Handle()) { 
-            int16_t* samples = input_->GetSamples();
+            sample_data_t data = input_->GetSamples();
+
+            if (listener_) {
+                // 数据回调
+                listener_(data);
+            }
 
             // 输出
-            output_->WriteSamples(samples, sizeof(samples) / sizeof(int16_t)); 
+            output_->WriteSamples(data); 
         }
     }
 

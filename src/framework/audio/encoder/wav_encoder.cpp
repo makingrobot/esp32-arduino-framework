@@ -28,7 +28,7 @@ bool WavEncoder::Init()
     return true;
 }
 
-bool WavEncoder::Encode(const uint16_t *data, uint32_t samples)
+bool WavEncoder::Encode(const sample_data_t data)
 {
     return false;
 }

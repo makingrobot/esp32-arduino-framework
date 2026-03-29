@@ -25,7 +25,7 @@ public:
     bool Init() override;
     bool Handle() override;
     bool Close() override;
-    int16_t* GetSamples() override;
+    sample_data_t GetSamples() override;
     bool isEOF() override;
 
     const char* Tag() override { return "DecoderInput"; };

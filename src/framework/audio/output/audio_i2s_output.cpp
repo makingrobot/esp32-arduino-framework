@@ -21,9 +21,9 @@ bool AudioI2sOutput::Init()
     return true;
 }
 
-uint32_t AudioI2sOutput::WriteSamples(const int16_t *data, uint32_t samples)
+uint32_t AudioI2sOutput::WriteSamples(const sample_data_t data)
 {
-    return codec_->Write(data, samples);
+    return codec_->Write(data.data, data.length);
 }
 
 #endif //CONFIG_USE_AUDIO

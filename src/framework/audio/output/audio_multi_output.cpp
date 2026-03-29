@@ -19,7 +19,7 @@ bool AudioMultiOutput::Init()
     return false;
 }
 
-uint32_t AudioMultiOutput::WriteSamples(const int16_t *data, uint32_t samples)
+uint32_t AudioMultiOutput::WriteSamples(const sample_data_t data)
 {
     return 0;
 }

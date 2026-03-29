@@ -20,7 +20,7 @@ public:
     AudioBufferOutput(AudioOutput *dest, int buf_size);
     virtual ~AudioBufferOutput();
 
-    virtual uint32_t WriteSamples(const int16_t *data, uint32_t samples) override;
+    virtual uint32_t WriteSamples(const sample_data_t data) override;
     virtual bool Stop() override;
 
     virtual void SetAudioConfig(const audio_config_t &config) override;

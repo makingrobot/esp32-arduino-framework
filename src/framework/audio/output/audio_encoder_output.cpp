@@ -52,7 +52,7 @@ bool AudioEncoderOutput::Init() {
     return true;
 }
 
-uint32_t AudioEncoderOutput::WriteSamples(const int16_t *data, uint32_t samples) {
+uint32_t AudioEncoderOutput::WriteSamples(const sample_data_t data) {
     // 编码处理
     return 0;
 }

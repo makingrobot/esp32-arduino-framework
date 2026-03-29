@@ -23,7 +23,7 @@ public:
     virtual ~AudioEncoderOutput();
 
     bool Init() override;
-    uint32_t WriteSamples(const int16_t *data, uint32_t samples) override;
+    uint32_t WriteSamples(const sample_data_t data) override;
     const char* Tag() override { return "EncoderOutput"; };
 
 private:

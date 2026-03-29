@@ -19,7 +19,7 @@ public:
     WavEncoder();
     virtual ~WavEncoder();
     bool Init() override;
-    bool Encode(const uint16_t *data, uint32_t samples) override;
+    bool Encode(const sample_data_t data) override;
     void SetBufferSize(int sz) { buffSize = sz; }
 
 private:
