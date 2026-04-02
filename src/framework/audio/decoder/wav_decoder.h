@@ -18,8 +18,8 @@ class WavDecoder : public AudioDecoder
 public:
     WavDecoder(AudioSource *source, uint16_t buf_size);
     virtual ~WavDecoder();
-    bool Init() override;
-    bool Decode() override;
+    virtual bool Init() override;
+    virtual sample_data_t Decode() override;
     void SetBufferSize(int sz) { buffSize = sz; }
 
 private:
@@ -42,6 +42,9 @@ private:
     uint8_t *buff;
     uint16_t buffPtr;
     uint16_t buffLen;
+
+    int16_t samples_[2];
+    const uint32_t samples_len_ = 2;
 };
 
 #endif //_WAV_DECODER_H

@@ -13,22 +13,27 @@
 #include <string>
 #include "../audio_output.h"
 #include "../audio_encoder.h"
+#include "src/framework/file/file_system.h"
 
 /**
  * 编码输出
  */
 class AudioEncoderOutput : public AudioOutput {
 public:
-    AudioEncoderOutput(AudioOutput *output, const std::string& out_format);
+    AudioEncoderOutput(FileSystem *fsys, const std::string &filename, const std::string& out_format);
     virtual ~AudioEncoderOutput();
 
-    bool Init() override;
-    uint32_t WriteSamples(const sample_data_t data) override;
-    const char* Tag() override { return "EncoderOutput"; };
+    virtual bool Init() override;
+    virtual uint32_t WriteSamples(const sample_data_t data) override;
+    virtual bool Close() override;
+    virtual const char* Tag() override { return PSTR("EncoderOutput"); };
 
 private:
-    AudioOutput *output_;
     AudioEncoder *encoder_;
+    FileSystem *fsys_;
+
+    const std::string filename_;
+    fs::File file_;
     const std::string out_format_;
 
 };

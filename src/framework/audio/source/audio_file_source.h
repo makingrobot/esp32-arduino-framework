@@ -21,17 +21,17 @@ class AudioFileSource : public AudioSource {
 public:
     AudioFileSource(FileSystem *fs, const std::string &filename) 
         : fs_(fs), filename_(filename) { }
-    ~AudioFileSource() { Close(); }
+    virtual ~AudioFileSource() { Close(); }
 
-    bool Init() override;
-    uint32_t Read(uint8_t *data, uint32_t len) override;
-    bool Seek(int32_t pos, int dir) override;
-    bool Close() override;
+    virtual bool Init() override;
+    virtual uint32_t Read(uint8_t *data, uint32_t len) override;
+    virtual bool Seek(int32_t pos, int dir) override;
+    virtual bool Close() override;
 
-    size_t GetPosition() override { return (file_) ? file_.position() : -1; }
-    size_t GetSize() override { return (file_) ? file_.size() : -1; }
+    virtual size_t GetPosition() override { return (file_) ? file_.position() : -1; }
+    virtual size_t GetSize() override { return (file_) ? file_.size() : -1; }
 
-    const char* Tag() override { return "FileSource"; };
+    virtual const char* Tag() override { return PSTR("FileSource"); };
 
 private:
     FileSystem *fs_;

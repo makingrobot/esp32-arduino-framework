@@ -19,7 +19,7 @@ class AudioOutput {
 public:
     virtual bool Init() { return false; }
     virtual uint32_t WriteSamples(const sample_data_t data) = 0;
-    virtual bool Stop() { return false; }
+    virtual bool Close() { return false; }
     virtual const char* Tag() = 0;
 
     virtual void SetAudioConfig(const audio_config_t &config) { config_ = config; }

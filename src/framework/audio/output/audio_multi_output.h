@@ -23,7 +23,7 @@ public:
 
     bool Init() override;
     uint32_t WriteSamples(const sample_data_t data) override;
-    bool Stop() override;
+    bool Close() override;
     const char* Tag() override { return "MultiOutput"; };
 
 private:

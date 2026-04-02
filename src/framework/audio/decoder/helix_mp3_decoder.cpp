@@ -39,10 +39,10 @@ bool HelixMP3Decoder::Init()
     return true;
 }
 
-bool HelixMP3Decoder::Decode()
+sample_data_t HelixMP3Decoder::Decode()
 {
     if (eof_)
-        return false;
+        return EMPTY_SAMPLE_DATA;
 
     // If we've got data, try and pump it out...
     if (validSamples)
@@ -51,7 +51,8 @@ bool HelixMP3Decoder::Decode()
         samples_[1] = outSample[curSample * 2 + 1];
         validSamples--;
         curSample++;
-        return true;
+        sample_data_t data{samples_, 2};
+        return data;
     }
 
     // No samples available, need to decode a new frame
@@ -68,23 +69,28 @@ bool HelixMP3Decoder::Decode()
             // char buff[48];
             // sprintf(buff, "MP3 decode error %d", ret);
             // source_->Status()->StatusCB(ret, buff);
-            return false;
+            return EMPTY_SAMPLE_DATA;
         }
 
         lastFrameEnd = buffValid - bytesLeft;
         MP3FrameInfo fi;
         MP3GetLastFrameInfo(hMP3Decoder, &fi);
-        sampleRate_ = fi.samprate;
-        channels_ = fi.nChans;
-        bitsPerSample_ = fi.bitsPerSample;
+        if (fi.samprate > 0) sampleRate_ = fi.samprate;
+        if (fi.nChans > 0) channels_ = fi.nChans;
+        if (fi.bitsPerSample > 0) bitsPerSample_ = fi.bitsPerSample;
 
         curSample = 0;
         validSamples = fi.outputSamps / channels_;
 
-        return true;
+        samples_[0] = outSample[curSample * 2];
+        samples_[1] = outSample[curSample * 2 + 1];
+        validSamples--;
+        curSample++;
+        sample_data_t data{samples_, 2};
+        return data;
     }
 
-    return false;
+    return EMPTY_SAMPLE_DATA;
 }
 
 bool HelixMP3Decoder::FillBufferWithValidFrame()

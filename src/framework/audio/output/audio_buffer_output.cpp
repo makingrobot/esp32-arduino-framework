@@ -29,9 +29,9 @@ void AudioBufferOutput::SetAudioConfig(const audio_config_t &config)
     output->SetAudioConfig(config);
 }
 
-bool AudioBufferOutput::Stop()
+bool AudioBufferOutput::Close()
 {
-    return output->Stop();
+    return output->Close();
 }
 
 uint32_t AudioBufferOutput::WriteSamples(const sample_data_t data)

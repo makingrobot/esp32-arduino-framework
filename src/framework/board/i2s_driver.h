@@ -7,6 +7,8 @@
 #include "config.h"
 #if CONFIG_USE_AUDIO==1
 
+// 移植自ESP32内置的ESP_I2S库
+
 #ifndef _I2S_DRIVER_H
 #define _I2S_DRIVER_H
 

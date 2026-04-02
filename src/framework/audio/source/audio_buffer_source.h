@@ -22,14 +22,14 @@ public:
     virtual ~AudioBufferSource();
 
     virtual bool Init() override;
-    uint32_t Read(uint8_t *data, uint32_t len) override;
-    bool Seek(int32_t pos, int dir) override;
-    bool Close() override;
+    virtual uint32_t Read(uint8_t *data, uint32_t len) override;
+    virtual bool Seek(int32_t pos, int dir) override;
+    virtual bool Close() override;
 
-    size_t GetPosition() override { return (source_) ? source_->GetPosition() : -1; }
-    size_t GetSize() override { return (source_) ? source_->GetSize() : -1; }
+    virtual size_t GetPosition() override { return (source_) ? source_->GetPosition() : -1; }
+    virtual size_t GetSize() override { return (source_) ? source_->GetSize() : -1; }
 
-    const char* Tag() override { return "BufferSource"; };
+    virtual const char* Tag() override { return PSTR("BufferSource"); };
 
     virtual void SetMetadataCallback(AudioStatus::MetadataCallbackFn fn, void *data) override {
         status.RegisterMetadataCallback(fn, Tag(), data);

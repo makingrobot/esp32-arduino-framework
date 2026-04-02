@@ -18,19 +18,14 @@ class WavEncoder : public AudioEncoder
 public:
     WavEncoder();
     virtual ~WavEncoder();
-    bool Init() override;
-    bool Encode(const sample_data_t data) override;
-    void SetBufferSize(int sz) { buffSize = sz; }
+    virtual bool Init() override;
+    virtual sample_data_t Encode(const sample_data_t data) override;
+
+    virtual uint16_t GetHeaderSize() const override { return 44; }
+    virtual void GetHeaderData(uint8_t *data, uint32_t data_len, audio_config_t config) const override;
 
 private:
     
-    uint32_t availBytes;
-
-    // We need to buffer some data in-RAM to avoid doing 1000s of small reads
-    uint32_t buffSize;
-    uint8_t *buff;
-    uint16_t buffPtr;
-    uint16_t buffLen;
 };
 
 #endif //_WAV_ENCODER_H

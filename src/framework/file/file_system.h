@@ -11,6 +11,14 @@
 #define _FILE_SYSTEM_H
 
 #include <FS.h>
+#include <functional>
+#include <string>
+
+enum FileAction {
+    Created,
+    Updated,
+    Deleted,
+};
 
 /**
  * 文件系统类
@@ -39,12 +47,18 @@ public:
     void setType(const std::string& type) { type_ = type; }
     const std::string& type() const { return type_; }
 
+    void SetActionListener(std::function<void(FileAction action, const std::string&)> listener)
+    {
+        listener_ = listener;
+    }
+
 private:
     fs::FS& fs_;
     uint32_t total_bytes_;
     uint32_t free_bytes_;
     std::string type_;
 
+    std::function<void(FileAction action, const std::string&)> listener_;
 };
 
 #endif //_FILE_SYSTEM_H

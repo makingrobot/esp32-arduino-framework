@@ -21,9 +21,9 @@ public:
     AudioI2sOutput(AudioCodec *codec) : codec_(codec) {  }
     virtual ~AudioI2sOutput() { };
 
-    bool Init() override;
-    uint32_t WriteSamples(const sample_data_t data) override;
-    const char* Tag() override { return "I2sOutput"; };
+    virtual bool Init() override;
+    virtual uint32_t WriteSamples(const sample_data_t data) override;
+    virtual const char* Tag() override { return "I2sOutput"; };
 
 private:
     AudioCodec *codec_;

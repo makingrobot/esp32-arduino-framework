@@ -46,7 +46,7 @@ bool AudioDecoderInput::Init()
     else if (in_format_ == "wav")
     {
 #if CONFIG_AUDIO_CODER_WAV == 1
-        decoder_ = new WavDecoder(source_);
+        decoder_ = new WavDecoder(source_, 2000);
 #else
 #pragma message("Please set CONFIG_AUDIO_CODER_WAV=1 in config file when use WAV decode.")
 #endif
@@ -68,14 +68,9 @@ bool AudioDecoderInput::Init()
     return true;
 }
 
-bool AudioDecoderInput::Handle()
+sample_data_t AudioDecoderInput::Handle()
 {
     return decoder_->Decode();
-}
-
-sample_data_t AudioDecoderInput::GetSamples()
-{
-    return decoder_->samples();
 }
 
 bool AudioDecoderInput::isEOF()

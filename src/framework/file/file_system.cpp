@@ -16,6 +16,10 @@ bool FileSystem::CreateDir(const char *path) {
     bool ret = fs_.mkdir(path);
     if (!ret) {
         Log::Warn(TAG, "Dir %s create failed", path);
+        return false;
+    }
+    if (listener_) {
+        listener_(FileAction::Created, std::string(path));
     }
     return ret;
 }
@@ -44,6 +48,10 @@ bool FileSystem::WriteFile(const char *path, const char *content) {
     }
 
     file.print(content);
+    
+    if (listener_) {
+        listener_(FileAction::Updated, std::string(path));
+    }
     return true;
 }
 
@@ -55,6 +63,10 @@ bool FileSystem::AppendFile(const char *path, const char *content) {
     }
 
     file.print(content);
+
+    if (listener_) {
+        listener_(FileAction::Updated, std::string(path));
+    }
     return true;
 }
 
@@ -70,6 +82,11 @@ bool FileSystem::DeleteFile(const char *path) {
     bool ret = fs_.remove(path);
     if (!ret) {
       Log::Warn(TAG, "File %s delete failed", path);
+      return false;
+    }
+    
+    if (listener_) {
+        listener_(FileAction::Deleted, std::string(path));
     }
     return ret;
 }

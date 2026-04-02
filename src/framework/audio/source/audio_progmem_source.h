@@ -18,16 +18,16 @@
 class AudioProgMemSource : public AudioSource {
 public:
     AudioProgMemSource(const uint8_t *data, uint32_t len);
-    ~AudioProgMemSource();
+    virtual ~AudioProgMemSource();
 
-    uint32_t Read(uint8_t *data, uint32_t len) override;
-    bool Seek(int32_t pos, int dir) override;
-    bool Close() override;
+    virtual uint32_t Read(uint8_t *data, uint32_t len) override;
+    virtual bool Seek(int32_t pos, int dir) override;
+    virtual bool Close() override;
 
-    size_t GetPosition() override { return -1; }
-    size_t GetSize() override { return progmemLen; }
+    virtual size_t GetPosition() override { return -1; }
+    virtual size_t GetSize() override { return progmemLen; }
 
-    const char* Tag() override { return "ProgMemSource"; };
+    virtual const char* Tag() override { return PSTR("ProgMemSource"); };
 
 private:
     const uint8_t *progmemData;

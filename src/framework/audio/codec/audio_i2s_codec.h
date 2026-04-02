@@ -18,7 +18,7 @@ public:
     virtual uint32_t Read(int16_t* dest, uint32_t samples) = 0;
     virtual uint32_t Write(const int16_t* data, uint32_t samples) = 0;
     
-    void SetOutputVolume(int volume) override;
+    virtual void SetOutputVolume(int volume) override;
 
     i2s_data_bit_width_t GetDataBitWidth(sample_bits_t bits) 
     {

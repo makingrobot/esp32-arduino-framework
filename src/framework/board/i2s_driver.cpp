@@ -7,6 +7,8 @@
 #include "config.h"
 #if CONFIG_USE_AUDIO==1
 
+// 移植自ESP32内置的ESP_I2S库
+
 #include "i2s_driver.h"
 #include "esp32-hal-periman.h"
 

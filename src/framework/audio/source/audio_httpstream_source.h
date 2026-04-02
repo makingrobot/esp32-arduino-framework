@@ -22,15 +22,15 @@ public:
     AudioHttpStreamSource(const std::string &audio_url);
     virtual ~AudioHttpStreamSource();
 
-    bool Init() override;
-    uint32_t Read(uint8_t *data, uint32_t len) override;
-    bool Seek(int32_t pos, int dir) override;
-    bool Close() override;
+    virtual bool Init() override;
+    virtual uint32_t Read(uint8_t *data, uint32_t len) override;
+    virtual bool Seek(int32_t pos, int dir) override;
+    virtual bool Close() override;
 
-    size_t GetPosition() override { return size_; }
-    size_t GetSize() override { return position_; }
+    virtual size_t GetPosition() override { return size_; }
+    virtual size_t GetSize() override { return position_; }
 
-    const char* Tag() override { return "HttpStreamSource"; };
+    virtual const char* Tag() override { return PSTR("HttpStreamSource"); };
 
     bool SetReconnect(int times, int delayms) { 
         retry_times_ = times; 

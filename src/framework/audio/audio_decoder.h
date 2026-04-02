@@ -18,25 +18,17 @@ class AudioDecoder
 {
 public:
     virtual bool Init() { return false; }
-    virtual bool Decode() = 0;
+    virtual sample_data_t Decode() = 0;
 
     bool isEOF() { return eof_; }
     uint16_t channels() const { return channels_; }
     uint32_t sampleRate() const { return sampleRate_; }
     uint16_t bitsPerSample() const { return bitsPerSample_; }
 
-    sample_data_t samples()
-    {
-        sample_data_t temp{
-            .data = samples_,
-            .length = 2};
-        return temp;
-    }
-
 protected:
     bool eof_ = false;
-    int16_t samples_[2];
-    uint16_t channels_ = 1;
+
+    uint16_t channels_ = 2;
     uint32_t sampleRate_ = 16000;
     uint16_t bitsPerSample_ = 16;
 };

@@ -22,13 +22,12 @@ public:
     AudioDecoderInput(AudioSource *source, const std::string& in_format);
     virtual ~AudioDecoderInput();
 
-    bool Init() override;
-    bool Handle() override;
-    bool Close() override;
-    sample_data_t GetSamples() override;
-    bool isEOF() override;
+    virtual bool Init() override;
+    virtual sample_data_t Handle() override;
+    virtual bool Close() override;
+    virtual bool isEOF() override;
 
-    const char* Tag() override { return "DecoderInput"; };
+    virtual const char* Tag() override { return "DecoderInput"; };
     
     virtual void SetMetadataCallback(AudioStatus::MetadataCallbackFn fn, void *data) override {
         status.RegisterMetadataCallback(fn, Tag(), data);

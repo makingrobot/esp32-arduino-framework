@@ -24,7 +24,7 @@ uint32_t AudioMultiOutput::WriteSamples(const sample_data_t data)
     return 0;
 }
 
-bool AudioMultiOutput::Stop() 
+bool AudioMultiOutput::Close() 
 {
     return false;
 }

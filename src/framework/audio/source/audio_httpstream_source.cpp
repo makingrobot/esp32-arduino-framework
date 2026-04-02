@@ -33,11 +33,11 @@ bool AudioHttpStreamSource::Open()
     position_ = 0;
     http_.begin(client_, audio_url_.c_str());
     http_.setReuse(true);
-
     int code = http_.GET();
     if (code != HTTP_CODE_OK) {
         http_.end();
         status.StatusCB(STATUS_HTTPFAIL, PSTR("Can't open HTTP request"));
+        Log::Warn(TAG, "Can't open url %s, status code: %d", audio_url_.c_str(), code);
         return false;
     }
     size_ = http_.getSize();

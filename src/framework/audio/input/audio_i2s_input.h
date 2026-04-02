@@ -17,21 +17,24 @@
  */
 class AudioI2sInput : public AudioInput {
 public:
-    AudioI2sInput(AudioCodec *codec) : codec_(codec) {  }
-    virtual ~AudioI2sInput() {  }
+    AudioI2sInput(AudioCodec *codec, uint16_t samples_msec) : codec_(codec), samples_msec_(samples_msec) {  }
+    virtual ~AudioI2sInput() {  Close(); }
 
-    bool Init() override;
-    bool Handle() override;
-    bool Close() override;
-    bool isEOF() override;
-    sample_data_t GetSamples() override;
+    virtual bool Init() override;
+    virtual sample_data_t Handle() override;
+    virtual bool Close() override;
+    virtual bool isEOF() override;
 
-    const char* Tag() override { return "I2sInput"; };
+    uint32_t duration_ms() { return duration_msec_; }
+    
+    virtual const char* Tag() override { return "I2sInput"; };
 
 private:
     AudioCodec *codec_;
-    int16_t samples_[2];
-    
+    uint16_t samples_msec_;
+    int16_t *samples_buf_;
+    uint32_t buff_len_;
+    uint32_t duration_msec_ = 0;
 };
 
 #endif // _AUDIO_I2S_INPUT_H

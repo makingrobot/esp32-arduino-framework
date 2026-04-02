@@ -8,19 +8,16 @@
 
 #include <Arduino.h>
 #include "wav_encoder.h"
+#include "wav_header.h"
 
 WavEncoder::WavEncoder()
 {
-    buffSize = 128;
-    buff = NULL;
-    buffPtr = 0;
-    buffLen = 0;
+
 }
 
 WavEncoder::~WavEncoder()
 {
-    free(buff);
-    buff = NULL;
+
 }
 
 bool WavEncoder::Init()
@@ -28,9 +25,17 @@ bool WavEncoder::Init()
     return true;
 }
 
-bool WavEncoder::Encode(const sample_data_t data)
+sample_data_t WavEncoder::Encode(const sample_data_t data)
 {
-    return false;
+    return data;
+}
+
+void WavEncoder::GetHeaderData(uint8_t *header, uint32_t data_len, audio_config_t config) const
+{
+    const pcm_wav_header_t wav_header = PCM_WAV_HEADER_DEFAULT(data_len, 
+        (uint8_t)config.bits, (uint32_t)config.rate, (uint8_t)config.channels);
+
+    memcpy(header, &wav_header, PCM_WAV_HEADER_SIZE);
 }
 
 #endif
