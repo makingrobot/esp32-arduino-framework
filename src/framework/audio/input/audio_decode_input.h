@@ -6,8 +6,8 @@
 #include "config.h"
 #if CONFIG_USE_AUDIO==1
 
-#ifndef _AUDIO_DECODER_INPUT_H
-#define _AUDIO_DECODER_INPUT_H
+#ifndef _AUDIO_DECODE_INPUT_H
+#define _AUDIO_DECODE_INPUT_H
 
 #include <string>
 #include "../audio_input.h"
@@ -17,10 +17,10 @@
 /**
  * 音频解码输入
  */
-class AudioDecoderInput : public AudioInput {
+class AudioDecodeInput : public AudioInput {
 public:
-    AudioDecoderInput(AudioSource *source, const std::string& in_format);
-    virtual ~AudioDecoderInput();
+    AudioDecodeInput(AudioSource *source, const std::string& in_format);
+    virtual ~AudioDecodeInput();
 
     virtual bool Init() override;
     virtual sample_data_t Handle() override;
@@ -46,6 +46,6 @@ private:
 
 };
 
-#endif // _AUDIO_DECODER_INPUT_H
+#endif // _AUDIO_DECODE_INPUT_H
 
 #endif //CONFIG_USE_AUDIO

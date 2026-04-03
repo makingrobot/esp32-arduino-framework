@@ -17,9 +17,12 @@ public:
     LvglAudioWindow();
     virtual ~LvglAudioWindow();
 
-    void SetupUI(lv_obj_t* container, const ThemeColors& theme, const DisplayFonts& fonts) override;
-    void SetTheme(const ThemeColors& theme) override;
+    virtual void SetupUI(lv_obj_t* container, const ThemeColors& theme, const DisplayFonts& fonts) override;
+    virtual void SetTheme(const ThemeColors& theme) override;
     
+    virtual void SetStatus(const std::string& status) override { }
+    virtual void SetText(uint8_t line, const std::string& text) override { }
+
     void SetTitle(const std::string& title);
     void SetContent(const std::string& content);
 

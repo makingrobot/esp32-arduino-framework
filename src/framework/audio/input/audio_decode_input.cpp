@@ -7,24 +7,24 @@
 #if CONFIG_USE_AUDIO == 1
 
 #include <Arduino.h>
-#include "audio_decoder_input.h"
+#include "audio_decode_input.h"
 #include "../decoder/helix_mp3_decoder.h"
 #include "../decoder/wav_decoder.h"
 #include "../../sys/log.h"
 
 #define TAG "DecoderInput"
 
-AudioDecoderInput::AudioDecoderInput(AudioSource *source, const std::string &in_format)
+AudioDecodeInput::AudioDecodeInput(AudioSource *source, const std::string &in_format)
     : source_(source), in_format_(in_format)
 {
 }
 
-AudioDecoderInput::~AudioDecoderInput()
+AudioDecodeInput::~AudioDecodeInput()
 {
     decoder_ = nullptr;
 }
 
-bool AudioDecoderInput::Init()
+bool AudioDecodeInput::Init()
 {
     Log::Info(TAG, "init...");
     bool ret = source_->Init();
@@ -68,17 +68,17 @@ bool AudioDecoderInput::Init()
     return true;
 }
 
-sample_data_t AudioDecoderInput::Handle()
+sample_data_t AudioDecodeInput::Handle()
 {
     return decoder_->Decode();
 }
 
-bool AudioDecoderInput::isEOF()
+bool AudioDecodeInput::isEOF()
 {
     return decoder_->isEOF();
 }
 
-bool AudioDecoderInput::Close()
+bool AudioDecodeInput::Close()
 {
     return source_->Close();
 }

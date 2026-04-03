@@ -7,8 +7,8 @@
 #include "config.h"
 #if CONFIG_USE_AUDIO==1
 
-#ifndef _AUDIO_ENCODER_OUTPUT_H
-#define _AUDIO_ENCODER_OUTPUT_H
+#ifndef _AUDIO_ENCODE_OUTPUT_H
+#define _AUDIO_ENCODE_OUTPUT_H
 
 #include <string>
 #include "../audio_output.h"
@@ -18,10 +18,10 @@
 /**
  * 编码输出
  */
-class AudioEncoderOutput : public AudioOutput {
+class AudioEncodeOutput : public AudioOutput {
 public:
-    AudioEncoderOutput(FileSystem *fsys, const std::string &filename, const std::string& out_format);
-    virtual ~AudioEncoderOutput();
+    AudioEncodeOutput(FileSystem *fsys, const std::string &filename, const std::string& out_format);
+    virtual ~AudioEncodeOutput();
 
     virtual bool Init() override;
     virtual uint32_t WriteSamples(const sample_data_t data) override;
@@ -38,6 +38,6 @@ private:
 
 };
 
-#endif // _AUDIO_I2S_OUTPUT_H
+#endif // _AUDIO_ENCODE_OUTPUT_H
 
 #endif

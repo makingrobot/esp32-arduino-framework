@@ -7,22 +7,22 @@
 #if CONFIG_USE_AUDIO==1
 
 #include <Arduino.h>
-#include "audio_encoder_output.h"
+#include "audio_encode_output.h"
 #include "../encoder/wav_encoder.h"
 #include "../../sys/log.h"
 
-#define TAG "EncoderOutput"
+#define TAG "EncodeOutput"
 
-AudioEncoderOutput::AudioEncoderOutput(FileSystem *fsys, const std::string &filename, const std::string& out_format) 
+AudioEncodeOutput::AudioEncodeOutput(FileSystem *fsys, const std::string &filename, const std::string& out_format) 
     : fsys_(fsys), filename_(filename), out_format_(out_format) {
 
 }
     
-AudioEncoderOutput::~AudioEncoderOutput() {
+AudioEncodeOutput::~AudioEncodeOutput() {
     Close();
 }
 
-bool AudioEncoderOutput::Init() {
+bool AudioEncodeOutput::Init() {
     Log::Info(TAG, "init...");
     if (fsys_->ExistsFile(filename_.c_str()))
     { // 存在就删除。
@@ -64,7 +64,7 @@ bool AudioEncoderOutput::Init() {
     return true;
 }
 
-uint32_t AudioEncoderOutput::WriteSamples(const sample_data_t data) {
+uint32_t AudioEncodeOutput::WriteSamples(const sample_data_t data) {
 
     // 数据预处理
     // TODO：是否要等待数据量足够后才能编码？
@@ -78,7 +78,7 @@ uint32_t AudioEncoderOutput::WriteSamples(const sample_data_t data) {
     return len;
 }
 
-bool AudioEncoderOutput::Close()
+bool AudioEncodeOutput::Close()
 {
     if (!file_)
         return false;

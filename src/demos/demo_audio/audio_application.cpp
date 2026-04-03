@@ -7,6 +7,8 @@
 #include "config.h"
 #if APP_DEMO_AUDIO==1
 
+#include <Arduino.h>
+#include <WiFi.h>
 #include <string>
 #include "audio_application.h"
 #include "audio_state.h"
@@ -14,6 +16,9 @@
 #include "src/framework/board/wifi_board.h"
 #include "src/framework/audio/audio_codec.h"
 #include "src/framework/lang/lang_zh_cn.h"
+#include "src/framework/audio/source/audio_httpstream_source.h"
+#include "src/framework/audio/input/audio_decode_input.h"
+#include "src/framework/audio/output/audio_i2s_output.h"
 
 #define TAG "AudioApplication"
 
@@ -53,14 +58,7 @@
 static const std::string kSsid = "ssid";
 static const std::string kPassword = "password";
 
-typedef struct {
-    const char* name;                                      
-    const char* url;                                       
-} mp3_info_t;
-
-static const mp3_info_t mp3_list[] {
-    {"鸡你太美", "http://music.163.com/song/media/outer/url?id=1980818176.mp3"},
-};
+static const std::string mp3_url = "http://music.163.com/song/media/outer/url?id=1980818176.mp3";
 
 void* create_application() {
     return new AudioApplication();
@@ -76,9 +74,6 @@ AudioApplication::AudioApplication() : Application() {
 
 AudioApplication::~AudioApplication() {
    
-    if (audio_task_handle_ != nullptr) {
-        vTaskDelete(audio_task_handle_);
-    }
 
 }
 
@@ -93,24 +88,10 @@ void AudioApplication::OnInit() {
 #endif
         Log::Info(TAG, "WiFi连接失败。");
         SetDeviceState(kDeviceStateWarning);
-        ShowMessage("WiFi连接失败。");
-        return false;
+        //ShowMessage("WiFi连接失败。");
+        return;
     }
 
-    Log::Info(TAG, "create audioI2s ...");
-    audio_ = new Audio(I2S_NUM_1);
-    audio_->setPinout(I2S_BCLK, I2S_LRC, I2S_DAT);
-    audio_->setVolume(8);  //0-21
-    Audio::audio_info_callback = [this](Audio::msg_t m){ this->AudioInfo(m); };
-
-    Board& board = Board::GetInstance();
-    // 启动音频编解码
-    Log::Info(TAG, "start audio codec ...");
-    AudioCodec* codec = board.GetAudioCodec();
-    codec->Start();
-    codec->SetOutputVolume(50);
-
-    mp3_total_ = sizeof(mp3_list) / sizeof(mp3_info_t);
 
 #if CONFIG_USE_LVGL==1
     window_->SetTitle("music player");
@@ -119,65 +100,22 @@ void AudioApplication::OnInit() {
     window->SetText("music player");
 #endif
 
-    mp3_info_t info = mp3_list[mp3_index_];
-    Log::Info(TAG, "play %s", info.url);
-    audio_->connecttohost(info.url);
+    Log::Info(TAG, "play %s", mp3_url.c_str());
+    
+    // input
+    AudioHttpStreamSource *http_source = new AudioHttpStreamSource(mp3_url);
+    AudioDecodeInput *input = new AudioDecodeInput(http_source, "mp3");
 
-    std::string str = std::to_string(mp3_index_+1);
-    str +=  " / ";
-    str += std::to_string(mp3_total_);
-
-#if CONFIG_USE_LVGL==1
-    window_->SetTitle(info.name);
-    window_->SetContent(str.c_str());
-#else CONFIG_USE_GFX_LIBRARY==1
-    GfxWindow* window = ((GfxDisplay*)board.GetDisplay())->GetWindow();
-    window->SetText(info.name);
-#endif
-
-    SetDeviceState(kDeviceStatePlaying);
-}
-
-void AudioApplication::AudioInfo(Audio::msg_t m) {
-
-    Log::Debug(TAG, "%s: %s", m.s, m.msg);
-    switch (m.e) {
-        case Audio::evt_eof:
-            AudioPlayEnd();
-            break;
-        case Audio::evt_id3data:
-            break;
-        case Audio::evt_image:
-            break;
-        case Audio::evt_lyrics:
-            break;
-    } 
-
-}
-
-void AudioApplication::AudioPlayEnd() {
-
-    mp3_index_ ++;
-    if (mp3_index_ == mp3_total_) {
-        mp3_index_ = 0;
-    }
-
-    mp3_info_t info = mp3_list[mp3_index_];
-    Log::Info(TAG, "play %s", info.url);
-    audio_->connecttohost(info.url);
-
-    std::string str = std::to_string(mp3_index_+1);
-    str +=  " / ";
-    str += std::to_string(mp3_total_);
-
-#if CONFIG_USE_LVGL==1
-    window_->SetTitle(info.name);
-    window_->SetContent(str.c_str());
-#else CONFIG_USE_GFX_LIBRARY==1
+    // output
     Board& board = Board::GetInstance();
-    GfxWindow* window = ((GfxDisplay*)board.GetDisplay())->GetWindow();
-    window->SetText(info.name);
-#endif
+    AudioCodec *codec = board.GetAudioCodec();
+    codec->EnableOutput(true);
+    AudioI2sOutput *output = new AudioI2sOutput(codec);
+
+    pipe_ = new AudioPipe();
+    pipe_->Start(input, output);
+    
+    SetDeviceState(kDeviceStatePlaying);
 }
 
 void AudioApplication::SetDeviceState(const DeviceState* state) {
@@ -194,7 +132,7 @@ void AudioApplication::SetDeviceState(const DeviceState* state) {
 }
 
 void AudioApplication::OnLoop() {
-    audio_->loop();
+    
     vTaskDelay(pdMS_TO_TICKS(1));
 }
 
