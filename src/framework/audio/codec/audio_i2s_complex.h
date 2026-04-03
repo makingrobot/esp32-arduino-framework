@@ -26,11 +26,9 @@ public:
     virtual uint32_t Write(const int16_t* data, uint32_t samples) override;
     virtual uint32_t Read(int16_t* dest, uint32_t samples) override;
 
-    bool Init(const audio_config_t &config, const audio_config_t &in_config);
-
 private:
-    AudioI2sSimplexSpeaker *speaker_;
-    AudioI2sSimplexMic *mic_;
+    AudioI2sSimplex *speaker_;
+    AudioI2sSimplex *mic_;
 
 };
 

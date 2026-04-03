@@ -18,10 +18,10 @@ bool AudioI2sInput::Init()
     // 获取实际的音频采样数据
     audio_config_t cfg = codec_->audio_config();
     Log::Info(TAG, "I2S input config: rate:%lu, bits:%lu, channels:%lu", 
-                    (uint32_t)cfg.rate, (uint8_t)cfg.bits, (uint8_t)cfg.channels);
+                    (uint32_t)cfg.input_rate, (uint8_t)cfg.input_bits, (uint8_t)cfg.input_channels);
 
     // 1s的数据大小
-    uint32_t onesec_size = ((uint32_t)cfg.rate * ((uint8_t)cfg.bits / 8) * (uint8_t)cfg.channels);
+    uint32_t onesec_size = ((uint32_t)cfg.input_rate * ((uint8_t)cfg.input_bits / 8) * (uint8_t)cfg.input_channels);
     
     // 时长对应的数据长度
     buff_len_ = onesec_size * samples_msec_ / 1000;

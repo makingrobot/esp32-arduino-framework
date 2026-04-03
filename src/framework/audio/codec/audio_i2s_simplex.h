@@ -18,9 +18,9 @@
  */
 class AudioI2sSimplex : public AudioI2sCodec {
 public:
+    AudioI2sSimplex();
     virtual ~AudioI2sSimplex();
 
-    virtual bool Init(const audio_config_t &config) override;
     virtual uint32_t Write(const int16_t* data, uint32_t samples) override;
     virtual uint32_t Read(int16_t* dest, uint32_t samples) override;
 
@@ -41,6 +41,7 @@ public:
         i2s_driver_->setPins(spk_bclk, spk_ws, spk_dout, -1, mclk);
     }
 
+    virtual bool Init(const audio_config_t &config) override;
     virtual void EnableInput(bool enable) override {  }
     
 private:
@@ -59,6 +60,7 @@ public:
         i2s_driver_->setPins(mic_sck, mic_ws, -1, mic_din, mclk);
     }
 
+    virtual bool Init(const audio_config_t &config) override;
     virtual void EnableOutput(bool enable) override {  }
 
 private:

@@ -33,7 +33,7 @@ sample_data_t WavEncoder::Encode(const sample_data_t data)
 void WavEncoder::GetHeaderData(uint8_t *header, uint32_t data_len, audio_config_t config) const
 {
     const pcm_wav_header_t wav_header = PCM_WAV_HEADER_DEFAULT(data_len, 
-        (uint8_t)config.bits, (uint32_t)config.rate, (uint8_t)config.channels);
+        (uint8_t)config.output_bits, (uint32_t)config.output_rate, (uint8_t)config.output_channels);
 
     memcpy(header, &wav_header, PCM_WAV_HEADER_SIZE);
 }

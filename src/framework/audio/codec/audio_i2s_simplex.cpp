@@ -16,24 +16,9 @@
 
 #define TAG "AudioI2sSimplex"
 
-bool AudioI2sSimplex::Init(const audio_config_t &config)
+AudioI2sSimplex::AudioI2sSimplex() 
 {
-    Log::Info(TAG, "init...");
-    AudioI2sCodec::Init(config);
 
-    i2s_data_bit_width_t bps = GetDataBitWidth(config.bits);
-    i2s_slot_mode_t ch = GetChannel(config.channels);
-
-    if (i2s_driver_) 
-    {
-        bool ret = i2s_driver_->begin(I2S_MODE_STD, (int)config.rate, bps, ch);
-        if (!ret) {
-            Log::Error(TAG, "Failed to initialize I2S tx!");
-            return false;
-        }
-    } 
-    
-    return true;
 }
 
 AudioI2sSimplex::~AudioI2sSimplex() 
@@ -60,6 +45,47 @@ uint32_t AudioI2sSimplex::Read(int16_t* dest, uint32_t samples)
 
     size_t bytes_read = i2s_driver_->readBytes((char *)dest, samples*2);
     return bytes_read;
+}
+
+
+bool AudioI2sSimplexSpeaker::Init(const audio_config_t &config)
+{
+    Log::Info(PSTR("AudioI2sSimplexSpeaker"), "init...");
+    AudioI2sCodec::Init(config);
+
+    i2s_data_bit_width_t bps = GetDataBitWidth(config.output_bits);
+    i2s_slot_mode_t ch = GetChannel(config.output_channels);
+
+    if (i2s_driver_) 
+    {
+        bool ret = i2s_driver_->begin(I2S_MODE_STD, (int)config.output_rate, bps, ch);
+        if (!ret) {
+            Log::Error(TAG, "Failed to initialize I2S tx!");
+            return false;
+        }
+    } 
+    
+    return true;
+}
+
+bool AudioI2sSimplexMic::Init(const audio_config_t &config)
+{
+    Log::Info(PSTR("AudioI2sSimplexMix"), "init...");
+    AudioI2sCodec::Init(config);
+
+    i2s_data_bit_width_t bps = GetDataBitWidth(config.input_bits);
+    i2s_slot_mode_t ch = GetChannel(config.input_channels);
+
+    if (i2s_driver_) 
+    {
+        bool ret = i2s_driver_->begin(I2S_MODE_STD, (int)config.input_rate, bps, ch);
+        if (!ret) {
+            Log::Error(TAG, "Failed to initialize I2S tx!");
+            return false;
+        }
+    } 
+    
+    return true;
 }
 
 #endif //CONFIG_USE_AUDIO

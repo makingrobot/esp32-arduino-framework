@@ -31,16 +31,11 @@ AudioI2sComplex::~AudioI2sComplex()
 
 bool AudioI2sComplex::Init(const audio_config_t &config)
 {
-    return Init(config, config);
-}
-
-bool AudioI2sComplex::Init(const audio_config_t &config, const audio_config_t &in_config)
-{
     Log::Info(TAG, "init...");
     AudioI2sCodec::Init(config);
 
     speaker_->Init(config);
-    mic_->Init(in_config);
+    mic_->Init(config);
   
     return true;
 }

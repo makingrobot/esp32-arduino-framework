@@ -69,13 +69,15 @@ typedef enum
  */
 typedef struct
 {
-    /*!< rate of sample */
-    sample_rate_t rate;
-    /*!< number of bits per sample */
-    sample_bits_t bits;
-    /*!< i2s number of channels */
-    channels_t channels;
+    /* input */
+    sample_rate_t input_rate;
+    sample_bits_t input_bits;
+    channels_t input_channels;
 
+    /* output */
+    sample_rate_t output_rate;
+    sample_bits_t output_bits;
+    channels_t output_channels;
 } audio_config_t;
 
 typedef struct

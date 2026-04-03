@@ -22,10 +22,10 @@ bool AudioI2sDuplex::Init(const audio_config_t &config)
     Log::Info(TAG, "init...");
     AudioI2sCodec::Init(config);
 
-    i2s_data_bit_width_t bps = GetDataBitWidth(config.bits);
-    i2s_slot_mode_t ch = GetChannel(config.channels);
+    i2s_data_bit_width_t bps = GetDataBitWidth(config.input_bits);
+    i2s_slot_mode_t ch = GetChannel(config.input_channels);
 
-    bool ret = i2s_driver_->begin(I2S_MODE_STD, (int)config.rate, bps, ch);
+    bool ret = i2s_driver_->begin(I2S_MODE_STD, (int)config.input_rate, bps, ch);
     if (!ret) {
         Log::Error(TAG, "Failed to initialize I2S!");
         return false;

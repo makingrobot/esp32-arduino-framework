@@ -34,9 +34,9 @@ public:
 
 protected:
     audio_config_t config_ = {
-        .rate = SAMPLE_RATE_44K,
-        .bits = SAMPLE_BITS_16,
-        .channels = CHANNELS_2,
+        .output_rate = SAMPLE_RATE_44K,
+        .output_bits = SAMPLE_BITS_16,
+        .output_channels = CHANNELS_2,
     };
 
     AudioStatus status;
