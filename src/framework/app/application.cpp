@@ -153,7 +153,7 @@ void Application::Schedule(callback_function_t callback) {
     {
         app_tasks_.push_back(std::move(callback));
 
-        event_group_->SetBits(EventHandler::kEventScheduleTask);
+        SendEvent(EventHandler::kEventScheduleTask);
     }
 }
 
@@ -353,13 +353,17 @@ void Application::CheckNewVersion() {
         // No new version, mark the current version as valid
         ota.MarkCurrentVersionValid();
         if (!ota.HasActivationCode() && !ota.HasActivationChallenge()) {
-            event_group_->SetBits(EventHandler::kEventNewVersion);
+            SendEvent(EventHandler::kEventNewVersion);
             // Exit the loop if done checking new version
             break;
         }
     }
 }
 #endif
+
+void Application::SendEvent(int event) {
+    event_group_->SetBits(event);
+}
 
 void Application::EventLoop() {
 

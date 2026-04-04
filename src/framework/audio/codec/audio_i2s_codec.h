@@ -15,6 +15,7 @@
 class AudioI2sCodec : public AudioCodec {
 public:
     virtual bool Init(const audio_config_t &config) override;
+    virtual void Start() override;
     virtual uint32_t Read(int16_t* dest, uint32_t samples) = 0;
     virtual uint32_t Write(const int16_t* data, uint32_t samples) = 0;
     

@@ -15,9 +15,9 @@
 #include "src/libs/esp_codec_dev/esp_codec_dev.h"
 #include "src/libs/esp_codec_dev/esp_codec_dev_defaults.h"
 #include "../audio_common.h"
-#include "../audio_codec.h"
+#include "audio_i2s_codec.h"
 
-class AudioEs8374Codec : public AudioCodec {
+class AudioEs8374Codec : public AudioI2sCodec {
 public:
     AudioEs8374Codec(void* i2c_master_handle, i2c_port_t i2c_port, int input_sample_rate, int output_sample_rate,
         gpio_num_t mclk, gpio_num_t bclk, gpio_num_t ws, gpio_num_t dout, gpio_num_t din,

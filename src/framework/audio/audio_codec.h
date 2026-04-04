@@ -19,6 +19,7 @@ public:
         return true;
     }
     
+    virtual void Start() = 0;
     virtual uint32_t Read(int16_t* dest, uint32_t samples) = 0;
     virtual uint32_t Write(const int16_t* data, uint32_t samples) = 0;
     
@@ -26,14 +27,19 @@ public:
     virtual void EnableInput(bool enable) { input_enabled_ = enable; }
     virtual void EnableOutput(bool enable) { output_enabled_ = enable; }
 
-    virtual audio_config_t audio_config() { return audio_config_; };
+    inline bool input_reference() const { return input_reference_; }
+    inline bool input_enabled() const { return input_enabled_; }
+    inline bool output_enabled() const { return output_enabled_; }
     const int output_volume() const { return output_volume_; }
+
+    virtual audio_config_t audio_config() { return audio_config_; };
 
 protected:
     audio_config_t audio_config_;
     int output_volume_ = 30;  // 1-100;
     bool input_enabled_ = false;
     bool output_enabled_ = false;
+    bool input_reference_ = false;
 
 };
 

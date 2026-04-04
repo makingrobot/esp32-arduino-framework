@@ -95,6 +95,8 @@ protected:
     // 事件循环。
     void EventLoop();
 
+    void SendEvent(int event);
+
     virtual void OnStateChanged();
 
 #if CONFIG_OTA_ENABLE==1
@@ -103,7 +105,6 @@ protected:
 
     DeviceState* device_state_ = const_cast<DeviceState*>(kDeviceStateUnknown);
     std::string last_error_message_;
-    FrtEventGroup *event_group_;
     EventHandler *event_handler_ = nullptr;
     Mutex *mutex_ = nullptr;
     int clock_ticks_ = 0;
@@ -115,6 +116,7 @@ private:
     std::deque<callback_function_t> app_tasks_;
     bool has_server_time_ = false;
 
+    FrtEventGroup *event_group_;
     FrtTask *eventloop_task_;
 
 #if CONFIG_CLOCK_ENABLE==1
